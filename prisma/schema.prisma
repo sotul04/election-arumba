@@ -14,18 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -56,19 +44,64 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
+    name          String
+    email         String    @unique
     emailVerified DateTime?
     image         String?
+    password      String?
+    hasProfile    Boolean   @default(false)
+    hasVoted      Boolean   @default(false)
+    role          Role      @default(VOTER)
+    major         String?
+    university    String?
+    generation    Int?
+    waNumber      String?
+    lineId        String?
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    voting        Vote[]
 }
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+enum Role {
+    VOTER
+    ADMIN
+}
 
-    @@unique([identifier, token])
+enum Position {
+    KETUA
+    BENDAHARA
+    SEKRETARIS
+    KADIV_INTERNAL
+    KADIV_HUMAS
+    KADIV_INFORMASI_DAN_KREASI
+    KADIV_EVENTS
+}
+
+model Candidate {
+    id         Int      @id @default(autoincrement())
+    fullname   String
+    university String
+    generation String
+    image      String
+    position   Position
+
+    voters Vote[]
+}
+
+model Vote {
+    id          Int      @id @default(autoincrement())
+    voterId     String
+    candidateId Int?
+    position    Position
+    createdAt   DateTime @default(now()) @db.Timestamptz()
+
+    voter     User       @relation(fields: [voterId], references: [id], onDelete: Cascade)
+    candidate Candidate? @relation(fields: [candidateId], references: [id], onDelete: SetNull)
+}
+
+model Timeline {
+    start DateTime @db.Timestamptz()
+    end   DateTime @db.Timestamptz()
+
+    @@unique([start, end])
 }
