@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { Position, Role } from "@prisma/client";
+import { Position } from "@prisma/client";
 
 type CandidateResult = {
     id: number;
@@ -77,42 +77,42 @@ export const voteRouter = createTRPCRouter({
                 });
             });
         }),
-    getVotingResult: protectedProcedure.use(async ({ ctx, next }) => {
-        if (ctx.session.user.role !== Role.ADMIN) {
-            throw new TRPCError({ code: "UNAUTHORIZED" });
-        }
-        return next();
-    }).query(async ({ ctx }) => {
-        const votes = await ctx.db.vote.groupBy({
-            by: ["position", "candidateId"],
-            _count: { _all: true },
-        });
+    getVotingResult: protectedProcedure
+        .query(async ({ ctx }) => {
+            if (ctx.session.user.role !== "ADMIN") {
+                throw new TRPCError({ code: "UNAUTHORIZED" });
+            }
 
-        const totalVoters = await ctx.db.user.count({ where: { role: Role.VOTER } });
-
-        const result: Record<string, { candidates: CandidateResult[]; total: number; abstain: number }> = {};
-
-        for (const position of Object.values(Position)) {
-            const positionVotes = votes.filter((v) => v.position === position);
-            const abstainCount = positionVotes.find((v) => v.candidateId === null)?._count._all || 0;
-
-            const candidates = await ctx.db.candidate.findMany({
-                where: { position },
-                select: { id: true, fullname: true, university: true, generation: true, major: true },
+            const votes = await ctx.db.vote.groupBy({
+                by: ["position", "candidateId"],
+                _count: { _all: true },
             });
 
-            const candidatesWithCount = candidates.map((candidate) => ({
-                ...candidate,
-                count: positionVotes.find((v) => v.candidateId === candidate.id)?._count._all || 0,
-            }));
+            const totalVoters = await ctx.db.user.count({ where: { role: "VOTER" } });
 
-            result[position] = {
-                candidates: candidatesWithCount,
-                total: totalVoters,
-                abstain: abstainCount,
-            };
-        }
+            const result: Record<string, { candidates: CandidateResult[]; total: number; abstain: number }> = {};
 
-        return result;
-    }),
+            for (const position of Object.values(Position)) {
+                const positionVotes = votes.filter((v) => v.position === position);
+                const abstainCount = positionVotes.find((v) => v.candidateId === null)?._count._all || 0;
+
+                const candidates = await ctx.db.candidate.findMany({
+                    where: { position },
+                    select: { id: true, fullname: true, university: true, generation: true, major: true },
+                });
+
+                const candidatesWithCount = candidates.map((candidate) => ({
+                    ...candidate,
+                    count: positionVotes.find((v) => v.candidateId === candidate.id)?._count._all || 0,
+                }));
+
+                result[position] = {
+                    candidates: candidatesWithCount,
+                    total: totalVoters,
+                    abstain: abstainCount,
+                };
+            }
+
+            return result;
+        }),
 })
