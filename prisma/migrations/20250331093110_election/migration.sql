@@ -57,8 +57,10 @@ CREATE TABLE "User" (
 CREATE TABLE "Candidate" (
     "id" SERIAL NOT NULL,
     "fullname" TEXT NOT NULL,
+    "major" TEXT NOT NULL,
     "university" TEXT NOT NULL,
     "generation" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
     "position" "Position" NOT NULL,
 
     CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id")
