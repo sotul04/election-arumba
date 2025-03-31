@@ -83,36 +83,52 @@ export const voteRouter = createTRPCRouter({
                 throw new TRPCError({ code: "UNAUTHORIZED" });
             }
 
-            const votes = await ctx.db.vote.groupBy({
-                by: ["position", "candidateId"],
-                _count: { _all: true },
-            });
+            // Execute all queries concurrently
+            const [voteResults, candidates, resultRow] = await Promise.all([
+                ctx.db.vote.groupBy({
+                    by: ["position", "candidateId"],
+                    _count: { _all: true },
+                }),
+                ctx.db.candidate.findMany({
+                    select: { id: true, fullname: true, university: true, generation: true, major: true, position: true },
+                }),
+                ctx.db.$queryRaw<
+                    Array<{ totalVoters: number; abstainCounts: Record<string, number> }>
+                >`
+                SELECT 
+                    COUNT(*) FILTER (WHERE role = 'VOTER') AS "totalVoters",
+                    jsonb_object_agg(v.position, COALESCE(a.count, 0)) AS "abstainCounts"
+                FROM "User" u
+                CROSS JOIN (SELECT DISTINCT position FROM "Vote") v
+                LEFT JOIN (SELECT position, COUNT(*) AS count FROM "Vote" WHERE "candidateId" IS NULL GROUP BY position) a
+                ON v.position = a.position
+                `,
+            ]);
 
-            const totalVoters = await ctx.db.user.count({ where: { role: "VOTER" } });
+            // Ensure valid data
+            const { totalVoters, abstainCounts } = resultRow[0] ?? { totalVoters: 0, abstainCounts: {} };
 
+            // Prepare the final result in one loop
             const result: Record<string, { candidates: CandidateResult[]; total: number; abstain: number }> = {};
 
             for (const position of Object.values(Position)) {
-                const positionVotes = votes.filter((v) => v.position === position);
-                const abstainCount = positionVotes.find((v) => v.candidateId === null)?._count._all || 0;
+                const positionVotes = voteResults.filter((v) => v.position === position);
 
-                const candidates = await ctx.db.candidate.findMany({
-                    where: { position },
-                    select: { id: true, fullname: true, university: true, generation: true, major: true },
-                });
-
-                const candidatesWithCount = candidates.map((candidate) => ({
-                    ...candidate,
-                    count: positionVotes.find((v) => v.candidateId === candidate.id)?._count._all || 0,
-                }));
+                const candidatesWithCount = candidates
+                    .filter((c) => c.position === position)
+                    .map((candidate) => ({
+                        ...candidate,
+                        count: positionVotes.find((v) => v.candidateId === candidate.id)?._count._all || 0,
+                    }));
 
                 result[position] = {
                     candidates: candidatesWithCount,
                     total: totalVoters,
-                    abstain: abstainCount,
+                    abstain: abstainCounts[position] || 0,
                 };
             }
 
             return result;
         }),
+
 })
