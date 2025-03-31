@@ -36,16 +36,6 @@ type Position =
     | "KADIV_INFORMASI_DAN_KREASI"
     | "KADIV_EVENTS"
 
-// Define candidate type
-interface Candidate {
-    id: number
-    fullname: string
-    university: string
-    generation: string
-    image: string
-    position: Position
-}
-
 // Define the form schema with Zod
 // Using number for all values, with 0 representing abstain
 // Each field is required to ensure user makes a selection
@@ -118,7 +108,7 @@ export default function VoteForm() {
     }
 
     // Track which positions have been selected
-    const updateSelectedPositions = (position: Position, value: number) => {
+    const updateSelectedPositions = (position: Position) => {
         setUnselectedPositions((prev) => prev.filter((pos) => pos !== position))
     }
 
@@ -213,7 +203,7 @@ export default function VoteForm() {
                                                                     }`}
                                                                 onClick={() => {
                                                                     form.setValue(positionKey, candidate.id)
-                                                                    updateSelectedPositions(positionKey, candidate.id)
+                                                                    updateSelectedPositions(positionKey)
                                                                 }}
                                                             >
                                                                 <div className="relative h-64 w-full">
@@ -262,7 +252,7 @@ export default function VoteForm() {
                                                                 checked={isSelected}
                                                                 onChange={() => {
                                                                     form.setValue(positionKey, candidate.id)
-                                                                    updateSelectedPositions(positionKey, candidate.id)
+                                                                    updateSelectedPositions(positionKey)
                                                                 }}
                                                             />
                                                         </div>
@@ -281,7 +271,7 @@ export default function VoteForm() {
                                                                 }`}
                                                             onClick={() => {
                                                                 form.setValue(positionKey, 0)
-                                                                updateSelectedPositions(positionKey, 0)
+                                                                updateSelectedPositions(positionKey)
                                                             }}
                                                         >
                                                             <div className="flex items-center justify-center h-64 w-full bg-gray-100">
@@ -324,7 +314,7 @@ export default function VoteForm() {
                                                             checked={field.value === 0}
                                                             onChange={() => {
                                                                 form.setValue(positionKey, 0)
-                                                                updateSelectedPositions(positionKey, 0)
+                                                                updateSelectedPositions(positionKey)
                                                             }}
                                                         />
                                                     </div>

@@ -28,6 +28,7 @@ main()
         console.error("❌ Seeding error:", e);
         process.exit(1);
     })
+    /* eslint-disable @typescript-eslint/no-misused-promises */
     .finally(async () => {
         await prisma.$disconnect();
     });

@@ -1,5 +1,4 @@
 import type React from "react"
-import Link from "next/link"
 import {
   Calendar,
   Users,
@@ -24,7 +23,7 @@ export default async function Home() {
         {/* Background with overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-background z-0" />
 
-        <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
+        <div className="container mx-auto px-4 py-16 md:py-24 relative">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <Badge className="px-4 py-1 text-sm font-medium mb-4 animate-fade-in bg-primary/20 text-primary hover:bg-primary/30 border-primary/20">
               Arumba Election 2025
@@ -48,14 +47,14 @@ export default async function Home() {
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold">Available Positions</h2>
               <p className="text-muted-foreground mt-4">
-                These are the key roles that will shape the future of our organization
+                These are the key roles that will shape the future of our Arumba
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <PositionCard
                 title="Ketua"
-                description="The leader who will guide our organization with vision and dedication."
+                description="The leader who will guide our Arumba with vision and dedication."
                 icon={<UserPlus className="h-10 w-10 text-primary" />}
               />
               <PositionCard
@@ -118,7 +117,7 @@ export default async function Home() {
                   <CheckCircle className="h-6 w-6 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2">Transparency</h3>
-                <p className="text-muted-foreground">Support transparency and fair governance.</p>
+                <p className="text-muted-foreground">Support transparency.</p>
               </div>
 
               <div className="text-center p-6 rounded-lg border bg-card hover:shadow-md transition-shadow">

@@ -27,7 +27,7 @@ const formSchema = z
             message: "University must be at least 2 characters.",
         }),
         generation: z.coerce.number({ message: "Masukkan angkatan yang valid" }).min(1, { message: "Minimal 1 Legalisir" }),
-        waNumber: z.string().min(6).refine(value => /^[0-9]+$/.test(value), { message: "Invalid phone number" }).optional(),
+        waNumber: z.string().refine(value => /^[0-9]+$/.test(value) ? true : !value, { message: "Invalid phone number" }).optional(),
         lineId: z.string().optional(),
     })
     .refine((data) => data.waNumber || data.lineId, {
@@ -35,7 +35,7 @@ const formSchema = z
         path: ["waNumber"],
     })
 
-export default function ProfileForm({ callback }: { callback: string }) {
+export default function ProfileForm({ callback }: { callback: string | undefined }) {
     const { data, isLoading, error, refetch } = api.profile.getProfile.useQuery()
     const mutation = api.profile.setProfile.useMutation()
     const formRef = useRef(null)
@@ -71,7 +71,15 @@ export default function ProfileForm({ callback }: { callback: string }) {
     }, [data, form])
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        mutation.mutate(values, {
+        const data = {
+            name: values.name,
+            major: values.major,
+            university: values.university,
+            generation: values.generation,
+            waNumber: values.waNumber ?? undefined,
+            lineId: values.lineId ?? undefined,
+        }
+        mutation.mutate(data, {
             onSuccess: () => {
                 toast.success("Profile saved", {
                     description: "Profile has been saved successfully",
@@ -79,7 +87,7 @@ export default function ProfileForm({ callback }: { callback: string }) {
                 if (callback) router.push(callback);
                 else {
                     setEdit(false);
-                    refetch()
+                    void refetch()
                 }
             },
             onError: (error) => {

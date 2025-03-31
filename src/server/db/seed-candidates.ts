@@ -29,7 +29,7 @@ async function seedCandidates() {
             generation: faker.number.int({ min: 2018, max: 2024 }).toString(),
             major: faker.commerce.product(),
             image: faker.image.avatar(),
-            position: position as Position,
+            position: position,
         }));
 
         await db.candidate.createMany({ data: candidates });
@@ -43,6 +43,7 @@ seedCandidates()
     .catch((error) => {
         console.error("\u274C Error seeding candidates:", error);
     })
+    /* eslint-disable @typescript-eslint/no-misused-promises */
     .finally(async () => {
         await db.$disconnect();
     });

@@ -47,7 +47,7 @@ export default function UsersPage() {
 
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
+            void fetchNextPage();
         }
     }, [inView, fetchNextPage, hasNextPage, isFetchingNextPage]);
 
@@ -55,7 +55,7 @@ export default function UsersPage() {
         setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     };
 
-    const allUsers = data?.pages.flatMap((page) => page.users) || [];
+    const allUsers = data?.pages.flatMap((page) => page.users) ?? [];
 
     const handleDeleteUser = async (userId: string) => {
         setDeletingUsers((prev) => new Set(prev).add(userId));
@@ -69,6 +69,7 @@ export default function UsersPage() {
             // Invalidate and refetch user list
             await utils.user.getUsers.invalidate();
         } catch (error) {
+            console.error(error);
             toast.error("Error", {
                 description: "Failed to delete user. Please try again."
             });

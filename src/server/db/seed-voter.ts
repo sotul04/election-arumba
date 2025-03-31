@@ -1,5 +1,5 @@
 // seedUsers.ts
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, type Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 
 const db = new PrismaClient();
@@ -37,6 +37,7 @@ seedUsers()
     .catch((error) => {
         console.error("Seeding error:", error);
     })
+    /* eslint-disable @typescript-eslint/no-misused-promises */
     .finally(async () => {
         await db.$disconnect();
     });

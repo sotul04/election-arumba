@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Instagram, Mail, Globe, Calendar, Shield } from "lucide-react"
+import { Instagram, Mail, Calendar, Shield } from "lucide-react"
 
 export function Footer() {
     const currentYear = new Date().getFullYear()

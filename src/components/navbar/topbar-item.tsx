@@ -12,7 +12,6 @@ export default function TopbarItem() {
     return <Skeleton className="h-8 w-28 rounded-full" />;
 
   let menus: React.ReactNode;
-  let menuItem = "Menu";
   if (session.status === "unauthenticated") {
     menus = <></>
   }
@@ -33,7 +32,6 @@ export default function TopbarItem() {
         ))}
       </>
     );
-    menuItem = "Layanan";
   } else {
     menus = (
       <>

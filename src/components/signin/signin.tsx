@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -58,7 +57,7 @@ export function SignInForm({ callbackUrl }: { callbackUrl: string | undefined })
     const handleGoogleSignIn = () => {
         setIsLoading(true);
 
-        signIn("google", {
+        void signIn("google", {
             callbackUrl: "/"
         });
 

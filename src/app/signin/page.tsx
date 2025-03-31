@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { redirect } from "next/navigation"
 import { SignInForm } from "~/components/signin/signin"
 import { getServerAuthSession } from "~/server/auth/config"
@@ -9,7 +8,7 @@ export const metadata: Metadata = {
     description: "Sign in to your account",
 }
 
-export default async function SignInPage({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
+export default async function SignInPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
 
     const session = await getServerAuthSession();
 
@@ -17,7 +16,9 @@ export default async function SignInPage({ searchParams }: { searchParams: { [ke
         redirect("/")
     }
 
-    const { callbackUrl } = searchParams;
+    const resolvedSearchParams = await searchParams
+
+    const callbackUrl = resolvedSearchParams.callback as string | undefined;
     const callbackPath = callbackUrl ? decodeURIComponent(callbackUrl) : undefined;
     return (
         <div className="h-screen flex flex-col items-center justify-center">
@@ -26,7 +27,7 @@ export default async function SignInPage({ searchParams }: { searchParams: { [ke
                     <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
                     <p className="text-sm text-muted-foreground">Sign in to your account to continue</p>
                 </div>
-                <SignInForm callbackUrl={callbackPath}/>
+                <SignInForm callbackUrl={callbackPath} />
             </div>
         </div>
     )

@@ -1,7 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { Position, Role, type Candidate } from "@prisma/client";
+import { Position, Role } from "@prisma/client";
+
+type CandidateResult = {
+    id: number;
+    fullname: string;
+    university: string;
+    generation: string;
+    major: string;
+    count: number;
+};
 
 export const voteRouter = createTRPCRouter({
     getCandidates: protectedProcedure
@@ -79,11 +88,9 @@ export const voteRouter = createTRPCRouter({
             _count: { _all: true },
         });
 
-        console.log("Result:", votes)
-
         const totalVoters = await ctx.db.user.count({ where: { role: Role.VOTER } });
 
-        const result: Record<string, { candidates: any[]; total: number; abstain: number }> = {};
+        const result: Record<string, { candidates: CandidateResult[]; total: number; abstain: number }> = {};
 
         for (const position of Object.values(Position)) {
             const positionVotes = votes.filter((v) => v.position === position);

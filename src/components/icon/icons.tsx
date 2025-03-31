@@ -1,7 +1,7 @@
-import { Loader2, Moon, SunMedium, Twitter, type LucideIcon } from "lucide-react"
-import React from "react"
+import { Loader2, Moon, SunMedium, Twitter, type LucideIcon } from "lucide-react";
+import React from "react";
 
-export type Icon = LucideIcon
+export type Icon = LucideIcon;
 
 export const Icons = {
     sun: SunMedium,
@@ -27,5 +27,7 @@ export const Icons = {
             ></path>
         </svg>
     )),
-}
+};
 
+// ✅ Set display name to fix ESLint warning
+Icons.google.displayName = "GoogleIcon";

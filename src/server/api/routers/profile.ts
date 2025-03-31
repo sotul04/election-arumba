@@ -39,8 +39,8 @@ export const profileRouter = createTRPCRouter({
             major: z.string().min(3),
             university: z.string().min(2),
             generation: z.number().min(1),
-            waNumber: z.string().min(6).refine(value => /^[0-9]+$/.test(value), { message: "Invalid phone number" }).optional(),
-            lineId: z.string().min(1).optional()
+            waNumber: z.string().refine(value => /^[0-9]+$/.test(value) ? true : !value, { message: "Invalid phone number" }).optional(),
+            lineId: z.string().optional(),
         }).refine(data => {
             return !!data.waNumber || !!data.lineId;
         }))

@@ -21,6 +21,7 @@ interface VoteResultCardProps {
     positionData: PositionResult
 }
 
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 export function VoteResultCard({ positionName, positionData }: VoteResultCardProps) {
     const { candidates, total, abstain } = positionData
     const hasMultipleCandidates = candidates.length > 1
@@ -69,7 +70,7 @@ export function VoteResultCard({ positionName, positionData }: VoteResultCardPro
                             <XAxis type="number" />
                             <YAxis type="category" dataKey="name" width={150} />
                             <Tooltip
-                                formatter={(value, name, props) => {
+                                formatter={(value) => {
                                     const percentage = totalVotes > 0 ? ((Number(value) / totalVotes) * 100).toFixed(1) : "0"
                                     return [`${value} votes (${percentage}%)`, "Votes"]
                                 }}
