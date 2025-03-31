@@ -32,7 +32,7 @@ export default function AuthSide() {
   }
 
   return (
-    <div className="my-2">
+    <div className="mb-10">
       <div className="flex items-center gap-2">
         <Avatar className="bg-slate-100">
           <AvatarImage
@@ -56,8 +56,7 @@ export default function AuthSide() {
         >
           <Button
             type="submit"
-            variant="link"
-            className="my-0 p-0 text-gray-100"
+            className="my-3 rounded-full active:bg-green-950"
           >
             <p>Sign out</p>
           </Button>

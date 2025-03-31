@@ -2,8 +2,8 @@ import withAuth from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 const roleAccessMap: Record<string, string[]> = {
-    admin: ["/dashboard", "/result", "/user"],
-    voter: ["/vote", "/vote/confirmation", "/profile"],
+    admin: ["/dashboard", "/result", "/user", "/"],
+    voter: ["/vote", "/vote/confirmation", "/profile", "/"],
 };
 
 // Function to check if role has access
@@ -61,5 +61,6 @@ export const config = {
         "/result/:path*",
         "/dashboard/:path*",
         "/profile/:path*",
+        "/"
     ],
 };

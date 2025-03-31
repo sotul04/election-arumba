@@ -91,7 +91,27 @@ export function CountdownTimer() {
                     </div>
                 </div>
             ) : (
-                <div className="text-xl font-bold text-red-600">Voting has ended</div>
+                <div className="flex justify-center gap-4 text-center">
+                    <div className="flex flex-col">
+                        <div className="text-3xl font-bold">0</div>
+                        <div className="text-xs text-muted-foreground uppercase">Days</div>
+                    </div>
+                    <div className="text-xl font-bold self-center">:</div>
+                    <div className="flex flex-col">
+                        <div className="text-3xl font-bold">00</div>
+                        <div className="text-xs text-muted-foreground uppercase">Hours</div>
+                    </div>
+                    <div className="text-xl font-bold self-center">:</div>
+                    <div className="flex flex-col">
+                        <div className="text-3xl font-bold">00</div>
+                        <div className="text-xs text-muted-foreground uppercase">Minutes</div>
+                    </div>
+                    <div className="text-xl font-bold self-center">:</div>
+                    <div className="flex flex-col">
+                        <div className="text-3xl font-bold">00</div>
+                        <div className="text-xs text-muted-foreground uppercase">Seconds</div>
+                    </div>
+                </div>
             )}
         </div>
     );
