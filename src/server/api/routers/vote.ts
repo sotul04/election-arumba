@@ -95,13 +95,16 @@ export const voteRouter = createTRPCRouter({
                 ctx.db.$queryRaw<
                     Array<{ totalVoters: number; abstainCounts: Record<string, number> }>
                 >`
-                SELECT 
-                    COUNT(*) FILTER (WHERE role = 'VOTER') AS "totalVoters",
-                    jsonb_object_agg(v.position, COALESCE(a.count, 0)) AS "abstainCounts"
-                FROM "User" u
-                CROSS JOIN (SELECT DISTINCT position FROM "Vote") v
-                LEFT JOIN (SELECT position, COUNT(*) AS count FROM "Vote" WHERE "candidateId" IS NULL GROUP BY position) a
-                ON v.position = a.position
+                    SELECT 
+                        (SELECT COUNT(*) FROM "User" WHERE "role" = 'VOTER') AS "totalVoters",
+                        jsonb_object_agg(v.position, COALESCE(a.count, 0)) AS "abstainCounts"
+                    FROM (SELECT DISTINCT position FROM "Vote") v
+                    LEFT JOIN (
+                        SELECT position, COUNT(*) AS count 
+                        FROM "Vote" 
+                        WHERE "candidateId" IS NULL 
+                        GROUP BY position
+                    ) a ON v.position = a.position
                 `,
             ]);
 
