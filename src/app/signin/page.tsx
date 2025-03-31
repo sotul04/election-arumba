@@ -17,7 +17,7 @@ export default async function SignInPage({ searchParams }: { searchParams: { [ke
         redirect("/")
     }
 
-    const { callbackUrl } = await searchParams;
+    const { callbackUrl } = searchParams;
     const callbackPath = callbackUrl ? decodeURIComponent(callbackUrl) : undefined;
     return (
         <div className="h-screen flex flex-col items-center justify-center">
