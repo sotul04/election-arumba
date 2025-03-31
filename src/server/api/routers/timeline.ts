@@ -1,9 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const timelineRouter = createTRPCRouter({
-    getTimeline: protectedProcedure
+    getTimeline: publicProcedure
         .query(async ({ ctx }) => {
             const timeline = await ctx.db.timeline.findFirst()
 

@@ -95,6 +95,7 @@ export default function VoteForm() {
     const router = useRouter()
     const [showConfirmDialog, setShowConfirmDialog] = useState(false)
     const [formValues, setFormValues] = useState<z.infer<typeof formSchema> | null>(null)
+    const [isSubmitting, setSubmitting]  = useState(false);
     const [unselectedPositions, setUnselectedPositions] = useState<Position[]>([
         "KETUA",
         "BENDAHARA",
@@ -132,32 +133,34 @@ export default function VoteForm() {
     async function submitVotes() {
         if (!formValues) return
 
-        try {
-            const submitted = {
-                KETUA: formValues.KETUA === 0 ? null : formValues.KETUA,
-                BENDAHARA: formValues.BENDAHARA === 0 ? null : formValues.BENDAHARA,
-                SEKRETARIS: formValues.SEKRETARIS === 0 ? null : formValues.SEKRETARIS,
-                KADIV_INTERNAL: formValues.KADIV_INTERNAL === 0 ? null : formValues.KADIV_INTERNAL,
-                KADIV_HUMAS: formValues.KADIV_HUMAS === 0 ? null : formValues.KADIV_HUMAS,
-                KADIV_INFORMASI_DAN_KREASI: formValues.KADIV_INFORMASI_DAN_KREASI === 0 ? null : formValues.KADIV_INFORMASI_DAN_KREASI,
-                KADIV_EVENTS: formValues.KADIV_EVENTS === 0 ? null : formValues.KADIV_EVENTS,
-            }
+        setSubmitting(true);
 
-            await mutation.mutateAsync(submitted);
-
-            toast.success("Votes submitted successfully", {
-                description: "Thank you for participating in the election.",
-            })
-
-            router.push("/vote/confirmation")
-        } catch (error) {
-            console.error("Error submitting votes:", error)
-            toast.error("Failed to submit votes", {
-                description: "Please try again later.",
-            })
-        } finally {
-            setShowConfirmDialog(false)
+        const submitted = {
+            KETUA: formValues.KETUA === 0 ? null : formValues.KETUA,
+            BENDAHARA: formValues.BENDAHARA === 0 ? null : formValues.BENDAHARA,
+            SEKRETARIS: formValues.SEKRETARIS === 0 ? null : formValues.SEKRETARIS,
+            KADIV_INTERNAL: formValues.KADIV_INTERNAL === 0 ? null : formValues.KADIV_INTERNAL,
+            KADIV_HUMAS: formValues.KADIV_HUMAS === 0 ? null : formValues.KADIV_HUMAS,
+            KADIV_INFORMASI_DAN_KREASI: formValues.KADIV_INFORMASI_DAN_KREASI === 0 ? null : formValues.KADIV_INFORMASI_DAN_KREASI,
+            KADIV_EVENTS: formValues.KADIV_EVENTS === 0 ? null : formValues.KADIV_EVENTS,
         }
+
+        mutation.mutate(submitted, {
+            onSuccess: () => {
+                toast.success("Votes submitted successfully", {
+                    description: "Thank you for participating in the election.",
+                })
+                router.push("/vote/confirmation")
+                setShowConfirmDialog(false)
+            },
+            onError: () => {
+                toast.error("Failed to submit votes", {
+                    description: "Please try again later.",
+                })
+                setShowConfirmDialog(false)
+                setSubmitting(false)
+            }
+        });
     }
 
     // Get candidate name by ID for confirmation dialog
@@ -213,12 +216,12 @@ export default function VoteForm() {
                                                                     updateSelectedPositions(positionKey, candidate.id)
                                                                 }}
                                                             >
-                                                                <div className="relative h-48 w-full">
+                                                                <div className="relative h-64 w-full">
                                                                     <Image
-                                                                        src={candidate.image || "/placeholder.svg"}
+                                                                        src={candidate.image ? `/api/avatar?url=${encodeURIComponent(candidate.image)}` : "/icons/placeholder.webp"}
                                                                         alt={candidate.fullname}
                                                                         fill
-                                                                        className="object-cover"
+                                                                        className="object-cover "
                                                                     />
                                                                     {isSelected && (
                                                                         <div className="absolute top-2 right-2 bg-emerald-500 text-white rounded-full p-1">
@@ -238,11 +241,12 @@ export default function VoteForm() {
                                                                         </div>
                                                                     )}
                                                                 </div>
-                                                                <CardHeader className="pb-2">
+                                                                <CardHeader className="pb-1">
                                                                     <CardTitle className="text-lg">{candidate.fullname}</CardTitle>
                                                                     <CardDescription>{candidate.university}</CardDescription>
+                                                                    <CardDescription>{candidate.major}</CardDescription>
                                                                 </CardHeader>
-                                                                <CardContent className="pb-2">
+                                                                <CardContent>
                                                                     <p className="text-sm">Generation: {candidate.generation}</p>
                                                                 </CardContent>
                                                                 <CardFooter className="pt-0 flex items-center">
@@ -280,7 +284,7 @@ export default function VoteForm() {
                                                                 updateSelectedPositions(positionKey, 0)
                                                             }}
                                                         >
-                                                            <div className="flex items-center justify-center h-48 w-full bg-gray-100">
+                                                            <div className="flex items-center justify-center h-64 w-full bg-gray-100">
                                                                 <div className="text-gray-400 text-6xl">⊘</div>
                                                                 {field.value === 0 && (
                                                                     <div className="absolute top-2 right-2 bg-emerald-500 text-white rounded-full p-1">
@@ -300,11 +304,11 @@ export default function VoteForm() {
                                                                     </div>
                                                                 )}
                                                             </div>
-                                                            <CardHeader className="pb-2">
+                                                            <CardHeader className="pb-6">
                                                                 <CardTitle className="text-lg">Abstain</CardTitle>
                                                                 <CardDescription>Choose not to vote for this position</CardDescription>
                                                             </CardHeader>
-                                                            <CardContent className="pb-2">
+                                                            <CardContent className="pb-1">
                                                                 <p className="text-sm text-gray-500">Your vote will be recorded as an abstention</p>
                                                             </CardContent>
                                                             <CardFooter className="pt-0 flex items-center">
@@ -347,7 +351,7 @@ export default function VoteForm() {
                             <Button
                                 type="submit"
                                 className="bg-emerald-700 hover:bg-emerald-800 px-8"
-                                disabled={mutation.isPending || unselectedPositions.length > 0}
+                                disabled={isSubmitting || unselectedPositions.length > 0}
                             >
                                 {mutation.isPending ? "Submitting..." : "Submit All Votes"}
                             </Button>

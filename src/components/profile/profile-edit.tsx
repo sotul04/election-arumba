@@ -27,7 +27,7 @@ const formSchema = z
             message: "University must be at least 2 characters.",
         }),
         generation: z.coerce.number({ message: "Masukkan angkatan yang valid" }).min(1, { message: "Minimal 1 Legalisir" }),
-        waNumber: z.string().optional(),
+        waNumber: z.string().min(6).refine(value => /^[0-9]+$/.test(value), { message: "Invalid phone number" }).optional(),
         lineId: z.string().optional(),
     })
     .refine((data) => data.waNumber || data.lineId, {

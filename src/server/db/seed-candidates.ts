@@ -16,7 +16,7 @@ const positions = [
 type Position = (typeof positions)[number];
 
 async function seedCandidates() {
-    console.log("🌱 Seeding candidates...");
+    console.log("\ud83c\udf31 Seeding candidates...");
 
     await db.candidate.deleteMany();
 
@@ -27,20 +27,21 @@ async function seedCandidates() {
             fullname: faker.person.fullName(),
             university: faker.company.name(),
             generation: faker.number.int({ min: 2018, max: 2024 }).toString(),
-            image: faker.image.avatar(), // Generates a random avatar image
+            major: faker.commerce.product(),
+            image: faker.image.avatar(),
             position: position as Position,
         }));
 
         await db.candidate.createMany({ data: candidates });
-        console.log(`✅ Added ${numCandidates} candidate(s) for ${position}`);
+        console.log(`\u2705 Added ${numCandidates} candidate(s) for ${position}`);
     }
 
-    console.log("✅ Seeding completed.");
+    console.log("\u2705 Seeding completed.");
 }
 
 seedCandidates()
     .catch((error) => {
-        console.error("❌ Error seeding candidates:", error);
+        console.error("\u274C Error seeding candidates:", error);
     })
     .finally(async () => {
         await db.$disconnect();

@@ -80,6 +80,7 @@ enum Position {
 model Candidate {
     id         Int      @id @default(autoincrement())
     fullname   String
+    major      String
     university String
     generation String
     image      String

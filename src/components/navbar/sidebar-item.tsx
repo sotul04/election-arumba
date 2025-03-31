@@ -26,7 +26,7 @@ export default function SidebarItem({
       <>
         {defaultUserMenu.map((item) => (
           <Link
-            className={`rounded-r-md rounded-tl-md bg-opacity-50 py-2 p-3 underline-offset-4 hover:underline ${pathname.startsWith(item.href) ? "bg-slate-500" : "bg-slate-700"}`}
+            className={`rounded-md bg-opacity-50 py-2 p-3 underline-offset-4 hover:underline ${pathname.startsWith(item.href) ? "bg-green-400/20" : "bg-green-700/20"}`}
             onClick={toggleSidebar}
             key={item.href}
             href={item.href}
@@ -41,7 +41,7 @@ export default function SidebarItem({
     <>
       {adminMenu.map((item) => (
         <Link
-          className={`rounded-r-md rounded-tl-md bg-opacity-50 py-2 p-3 underline-offset-4 hover:underline ${pathname.startsWith(item.href) ? "bg-slate-500" : "bg-slate-700"}`}
+          className={`rounded-md bg-opacity-50 py-2 p-3 underline-offset-4 hover:underline ${pathname.startsWith(item.href) ? "bg-green-400/20" : "bg-green-700/20"}`}
           onClick={toggleSidebar}
           key={item.href}
           href={item.href}

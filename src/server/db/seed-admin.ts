@@ -20,7 +20,7 @@ async function seed() {
             password: passwordHashed,
             name: "Admin Election Arumba",
             role: "ADMIN",
-            image: `https://lh3.googleusercontent.com/d/1sKPMLqANvu9hb2JxR_sSQvkX4oZFyHJf`
+            image: `https://lh3.googleusercontent.com/d/106Z3wt3vVFXarzpJPE2ZBk6cfasKGKel`
         }
     })
 

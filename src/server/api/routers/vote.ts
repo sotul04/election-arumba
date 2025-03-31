@@ -91,7 +91,7 @@ export const voteRouter = createTRPCRouter({
 
             const candidates = await ctx.db.candidate.findMany({
                 where: { position },
-                select: { id: true, fullname: true, university: true, generation: true },
+                select: { id: true, fullname: true, university: true, generation: true, major: true },
             });
 
             const candidatesWithCount = candidates.map((candidate) => ({

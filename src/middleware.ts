@@ -61,7 +61,6 @@ export const config = {
         "/vote/:path*",
         "/result/:path*",
         "/dashboard/:path*",
-        "/user/:path*",
         "/profile/:path*",
     ],
 };
