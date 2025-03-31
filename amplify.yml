@@ -4,6 +4,7 @@ frontend:
     preBuild:
       commands:
         - npm install # Install dependencies
+        - npm install --legacy-peer-deps
         - npx prisma generate # Generate Prisma client
     build:
       commands:
