@@ -3,8 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - corepack enable # Ensure the correct package manager version
-        - npm install --legacy-peer-deps # Install dependencies with compatibility
+        - npm ci
         - npx prisma generate # Generate Prisma client
     build:
       commands:
