@@ -261,11 +261,11 @@ export default function ProfileForm({ callback }: { callback: string | undefined
                             }}>
                                 Cancel
                             </Button>
-                            <Button type="submit" className="bg-green-900 hover:bg-green-950" disabled={mutation.isPending}>
+                            <Button type="submit" disabled={mutation.isPending}>
                                 {mutation.isPending ? "Saving..." : "Save Profile"}
                             </Button>
                         </div>}
-                        {!isEdit && <Button type="button" className="w-full bg-green-900 hover:bg-green-950" onClick={() => setEdit(true)}>
+                        {!isEdit && <Button type="button" onClick={() => setEdit(true)}>
                             Edit
                         </Button>}
                     </form>

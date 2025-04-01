@@ -340,7 +340,7 @@ export default function VoteForm() {
                             )}
                             <Button
                                 type="submit"
-                                className="bg-emerald-700 hover:bg-emerald-800 px-8"
+                                className="px-8"
                                 disabled={isSubmitting || unselectedPositions.length > 0}
                             >
                                 {mutation.isPending ? "Submitting..." : "Submit All Votes"}

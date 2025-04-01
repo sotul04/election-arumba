@@ -2,6 +2,6 @@
   command = "next build"
   publish = ".next"
 [[headers]]
-  for = "/*"
+  for = "/next/image/*"
   [headers.values]
-    Cache-Control = "public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600"
+    Cache-Control = "public, max-age=86400, s-maxage=86400, stale-while-revalidate=3600, must-revalidate"
