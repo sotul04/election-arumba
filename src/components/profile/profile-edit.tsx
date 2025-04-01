@@ -255,7 +255,7 @@ export default function ProfileForm({ callback }: { callback: string | undefined
                         </div>
 
                         {isEdit && <div className="flex gap-2 justify-end">
-                            <Button type="button" variant={"outline"} onClick={() => {
+                            <Button type="button" disabled={mutation.isPending} variant={"outline"} onClick={() => {
                                 resetForm();
                                 setEdit(false);
                             }}>

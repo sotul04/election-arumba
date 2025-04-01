@@ -102,7 +102,7 @@ export function SignInForm({ callbackUrl }: { callbackUrl: string | undefined })
                             )}
                         />
 
-                        <Button type="submit" className="w-full bg-green-900 hover:bg-green-950" disabled={isLoading}>
+                        <Button type="submit" className="w-full" disabled={isLoading}>
                             {isLoading ? <Icons.spinner className="mr-2 h-4 w-4 animate-spin" /> : null}
                             Sign In
                         </Button>
@@ -118,7 +118,7 @@ export function SignInForm({ callbackUrl }: { callbackUrl: string | undefined })
                     </div>
                 </div>
 
-                <Button variant="outline" type="button" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading}>
+                <Button variant="outline" type="button" className="w-full hover:bg-primary-foreground" onClick={handleGoogleSignIn} disabled={isLoading}>
                     {isLoading ? (
                         <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
