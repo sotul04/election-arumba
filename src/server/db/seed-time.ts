@@ -15,7 +15,7 @@ async function main() {
             start: new Date(Date.UTC(2025, 2, 30, 16, 20, 0)),
 
             // Waktu akhir voting (10 hari dari sekarang)
-            end: new Date(Date.UTC(2025, 3, 14, 12, 20, 0)),
+            end: new Date(Date.UTC(2025, 3, 30, 12, 20, 0)),
 
         },
     });

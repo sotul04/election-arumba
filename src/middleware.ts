@@ -2,14 +2,17 @@ import withAuth from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
 const roleAccessMap: Record<string, string[]> = {
-    admin: ["/dashboard", "/result", "/user", "/"],
-    voter: ["/vote", "/vote/confirmation", "/profile", "/"],
+    admin: ["/", "/dashboard", "/result", "/user"],
+    voter: ["/", "/vote", "/vote/confirmation", "/profile"],
 };
 
 // Function to check if role has access
 function doesRoleHaveAccessToURL(role: string, url: string) {
     const accessibleRoutes = roleAccessMap[role] || [];
-    return accessibleRoutes.some((route) => url.startsWith(route));
+
+    return accessibleRoutes.some((route) =>
+        route === "/" ? url === "/" : url.startsWith(route)
+    );
 }
 
 export default withAuth(
@@ -56,11 +59,5 @@ export default withAuth(
 
 // Apply middleware only to protected routes
 export const config = {
-    matcher: [
-        "/vote/:path*",
-        "/result/:path*",
-        "/dashboard/:path*",
-        "/profile/:path*",
-        "/",
-    ],
-};
+    matcher: ["/((?!api|_next|public|favicon.ico).*)"],
+  };
