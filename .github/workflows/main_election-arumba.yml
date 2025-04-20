@@ -17,8 +17,10 @@ env:
   NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: 📥 Checkout repository
@@ -34,6 +36,8 @@ jobs:
           npm install
           npx prisma generate
           npm run build
+
+          # Prepare the standalone folder
           mkdir -p .next/standalone/.next
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
@@ -45,14 +49,37 @@ jobs:
           DATABASE_URL: ${{ env.DATABASE_URL }}
           DIRECT_URL: ${{ env.DIRECT_URL }}
           NEXTAUTH_URL: ${{ env.NEXTAUTH_URL }}
-        
-      - name: 📂 Verify package contents
-        run: ls -R .next/standalone
+
+      - name: 📦 Zip standalone for deployment
+        run: |
+          cd .next/standalone
+          zip -r ../../release.zip .
+
+      - name: 📤 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-standalone
+          path: release.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+
+    steps:
+      - name: 📥 Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-standalone
+
+      - name: 📂 Unzip artifact
+        run: unzip release.zip
 
       - name: 🚀 Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.WEBAPP_NAME }}
-          slot-name: "Production"
+          slot-name: 'Production'
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./.next/standalone/
+          package: .
