@@ -34,8 +34,8 @@ jobs:
           npm install
           npx prisma generate
           npm run build
-          mv ./.next/static ./.next/standalone/.next
-          mv ./public ./.next/standalone
+          cp -r ./.next/static ./.next/standalone/.next/
+          cp -r ./public ./.next/standalone/
 
         env:
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
@@ -51,4 +51,4 @@ jobs:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: ./.next/standalone
+          package: ./.next/standalone/
