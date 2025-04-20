@@ -48,11 +48,11 @@ jobs:
 
       - name: Prepare output directory for deployment
         run: |
-          mkdir -p output
-          cp -r .next/standalone/* output/
-          cp -r .next/static output/.next/static
-          cp -r public output/public
-          cp package.json output/
+            mkdir -p output/.next
+            cp -r .next/standalone/* output/
+            [ -d ".next/static" ] && cp -r .next/static output/.next/static || echo "No .next/static directory to copy"
+            [ -d "public" ] && cp -r public output/public || echo "No public directory to copy"
+            cp package.json output/
 
       - name: Zip artifact for deployment
         run: cd output && zip -r ../release.zip . && cd ..
