@@ -45,6 +45,9 @@ jobs:
           DATABASE_URL: ${{ env.DATABASE_URL }}
           DIRECT_URL: ${{ env.DIRECT_URL }}
           NEXTAUTH_URL: ${{ env.NEXTAUTH_URL }}
+        
+      - name: 📂 Verify package contents
+        run: ls -R .next/standalone
 
       - name: 🚀 Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
