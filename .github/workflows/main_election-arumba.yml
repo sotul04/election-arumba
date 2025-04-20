@@ -35,10 +35,13 @@ jobs:
           npx prisma generate
           npx prisma migrate deploy
           npm run build
-          mkdir -p .next/standalone/.next
-          cp -r .next/static .next/standalone/.next/static || echo "No .next/static to copy"
-          cp -r public .next/standalone/public || echo "No public folder to copy"
-          cp package.json .next/standalone
+
+          mkdir -p output
+          cp -r .next output/.next
+          cp -r public output/public || echo "No public folder"
+          cp -r node_modules output/node_modules
+          cp server.js output/server.js
+          cp package.json output/package.json
         env:
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
           GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
@@ -53,4 +56,4 @@ jobs:
           app-name: ${{ env.WEBAPP_NAME }}
           slot-name: "Production"
           publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
-          package: .next/standalone
+          package: output
