@@ -36,12 +36,13 @@ jobs:
           npx prisma migrate deploy
           npm run build
 
+          # Prepare output directory from standalone build
           mkdir -p output
-          cp -r .next output/.next
+          cp -r .next/standalone/* output/
+          cp -r .next/static output/.next/static
           cp -r public output/public || echo "No public folder"
-          cp -r node_modules output/node_modules
-          cp server.js output/server.js
           cp package.json output/package.json
+          cp -r prisma output/prisma
         env:
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
           GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
