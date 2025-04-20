@@ -34,8 +34,6 @@ jobs:
           npm install
           npx prisma generate
           npm run build
-          mv ./.next/static ./.next/standalone/.next
-          mv ./public ./.next/standalone
 
         env:
           AUTH_SECRET: ${{ env.AUTH_SECRET }}
