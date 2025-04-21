@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - election-arumba
+name: Build and deploy Next.js app to Azure Web App - election-arumba
 
 on:
   push:
@@ -20,56 +17,42 @@ env:
   NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v3
+      - name: 🧰 Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: "20.x"
 
-      - name: npm install, build, and test
+      - name: 📦 Install dependencies and build
         run: |
           npm install
+          npx prisma generate
           npm run build
-          cp -r .next/static .next/standalone/.next
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./* -r
+        env:
+          AUTH_SECRET: ${{ env.AUTH_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }}
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          DIRECT_URL: ${{ env.DIRECT_URL }}
+          NEXTAUTH_URL: ${{ env.NEXTAUTH_URL }}
+        
+      - name: 📂 Verify package contents
+        run: ls -R .next/standalone
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: node-app
-          path: release.zip
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: node-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-      
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
+      - name: 🚀 Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'election-arumba'
-          slot-name: 'Production'
-          package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1F4BC222B7534D1A8DBB577A7B24E40B }}
+          app-name: ${{ env.WEBAPP_NAME }}
+          slot-name: "Production"
+          publish-profile: ${{ env.APPLICATION_PUBLISH_PROFILE }}
+          package: ./.next/standalone/
