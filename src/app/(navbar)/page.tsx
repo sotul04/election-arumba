@@ -149,7 +149,7 @@ export default async function Home() {
                 <h3 className="text-xl font-semibold mb-1">Voting Day</h3>
                 <p className="text-muted-foreground">April 25, 2025</p>
                 <p className="mt-2">
-                  Cast your vote online or in-person at designated polling stations from 8:00 AM to April 26, 2025 8:00 PM.
+                  Cast your vote online or in-person at designated polling stations from 8:00 AM to April 27, 2025 8:00 PM.
                 </p>
               </div>
             </div>

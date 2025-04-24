@@ -12,7 +12,7 @@ async function seed() {
         }
     });
 
-    const passwordHashed = await bcrypt.hash("password", 10);
+    const passwordHashed = await bcrypt.hash("Admin?\\2025", 10);
 
     await db.user.create({
         data: {
